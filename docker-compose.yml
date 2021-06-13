@@ -1,0 +1,29 @@
+# docker-compose-mongodb.yaml
+version: '3.2'
+services:
+  mongodb:
+    image: mongo:4.0.4
+    container_name: mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=12345
+      - MONGODB_USERNAME=test
+      - MONGODB_PASSWORD=12345
+      - MONGO_INITDB_DATABASE=train
+
+    volumes:
+      - mongodb-data2:/data/db
+    ports:
+      - 27000:27017
+      - 27017:27017
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo 10.10.10.60:27017/test --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+volumes:
+  mongodb-data2:
+
+# docker run -d -p 27017-27019:27017-27019 --name mongodb mongo:4.0.4
